@@ -4,6 +4,7 @@ import com.devsuperior.dsclients.dto.ClientDTO;
 import com.devsuperior.dsclients.entities.Client;
 import com.devsuperior.dsclients.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,10 +16,10 @@ import java.util.stream.Collectors;
 public class ClientService {
 
     @Autowired
-    private  ClientRepository clientRepository;
+    private ClientRepository clientRepository;
 
     @Transactional(readOnly = true)
-    public List<ClientDTO> findAll(){
+    public List<ClientDTO> findAll() {
         return clientRepository.findAll().stream().map(ClientDTO::new).collect(Collectors.toList());
     }
 
@@ -52,5 +53,13 @@ public class ClientService {
 
         }
         return null;
+    }
+
+    public void delete(Long id) {
+        try {
+            clientRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException emptyResultDaoException) {
+
+        }
     }
 }
