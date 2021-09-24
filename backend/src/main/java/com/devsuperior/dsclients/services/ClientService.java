@@ -5,12 +5,12 @@ import com.devsuperior.dsclients.entities.Client;
 import com.devsuperior.dsclients.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ClientService {
@@ -19,8 +19,8 @@ public class ClientService {
     private ClientRepository clientRepository;
 
     @Transactional(readOnly = true)
-    public List<ClientDTO> findAll() {
-        return clientRepository.findAll().stream().map(ClientDTO::new).collect(Collectors.toList());
+    public Page<ClientDTO> findAllPaged(PageRequest pageRequest) {
+        return clientRepository.findAll(pageRequest).map(ClientDTO::new);
     }
 
     @Transactional(readOnly = true)
