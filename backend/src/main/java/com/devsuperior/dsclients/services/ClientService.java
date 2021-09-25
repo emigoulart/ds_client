@@ -25,7 +25,7 @@ public class ClientService {
 
     @Transactional(readOnly = true)
     public ClientDTO findById(Long id) {
-        return clientRepository.findById(id).map(ClientDTO::new).orElse(null);
+        return clientRepository.findById(id).map(ClientDTO::new).orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
     }
 
     @Transactional
@@ -50,16 +50,15 @@ public class ClientService {
             client.setChildren(clientDTO.getChildren());
             return new ClientDTO(clientRepository.save(client));
         } catch (EntityNotFoundException entityNotFoundException) {
-
+            throw  new ResourceNotFoundException("Id not found: " + id);
         }
-        return null;
     }
 
     public void delete(Long id) {
         try {
             clientRepository.deleteById(id);
         } catch (EmptyResultDataAccessException emptyResultDaoException) {
-
+            throw  new ResourceNotFoundException("Id not found: " + id);
         }
     }
 }
